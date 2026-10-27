@@ -16,6 +16,8 @@ class ActionResponse(BaseModel):
 
     result: str
     source: str  # "llm" or "fallback"
+    rag: str | None = None  # replies only: "used", "no_match" or "no_resume"
+    rag_chunks_used: int | None = None
 
 
 class UsageEvent(BaseModel):

@@ -17,5 +17,6 @@ def build_chain(template) -> Runnable:
 
 summarize_chain = build_chain(prompt_templates.SUMMARIZE)
 reply_chain = build_chain(prompt_templates.REPLY)
+reply_with_resume_chain = build_chain(prompt_templates.REPLY_WITH_RESUME)
 tasks_chain = build_chain(prompt_templates.TASKS)
 classify_chain = build_chain(prompt_templates.CLASSIFY)

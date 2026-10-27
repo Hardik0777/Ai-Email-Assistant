@@ -6,6 +6,7 @@ from langchain_core.runnables import Runnable
 from app.schemas import ActionResponse, EmailRequest
 from app.services import chains, fallback
 from app.services.llm import LLMUnavailable
+from app.services.rag.resume import get_rag
 
 log = logging.getLogger(__name__)
 MAX_BODY = 8000  # keep prompts short and cheap
@@ -20,9 +21,9 @@ def _inputs(email: EmailRequest) -> dict:
     }
 
 
-async def _run(chain: Runnable, email: EmailRequest) -> str | None:
+async def _run(chain: Runnable, email: EmailRequest, **extra) -> str | None:
     try:
-        return await chain.ainvoke(_inputs(email))
+        return await chain.ainvoke({**_inputs(email), **extra})
     except LLMUnavailable as exc:
         log.warning("Using fallback: %s", exc)
         return None
@@ -35,9 +36,25 @@ async def summarize(email: EmailRequest) -> ActionResponse:
 
 
 async def reply(email: EmailRequest) -> ActionResponse:
-    text = await _run(chains.reply_chain, email)
-    return ActionResponse(result=text, source="llm") if text else \
-        ActionResponse(result=fallback.reply(email), source="fallback")
+    rag = get_rag()
+    hits: list[dict] = []
+    rag_state = "no_resume"
+    if rag.status()["has_resume"]:
+        try:
+            hits = await rag.retrieve(f"{email.subject}\n{email.body}")
+        except LLMUnavailable as exc:
+            log.warning("Resume retrieval skipped: %s", exc)
+        rag_state = "used" if hits else "no_match"
+
+    if hits:
+        context = "\n\n".join(h["text"] for h in hits)
+        text = await _run(chains.reply_with_resume_chain, email, resume_context=context)
+    else:
+        text = await _run(chains.reply_chain, email)
+
+    if not text:
+        return ActionResponse(result=fallback.reply(email), source="fallback")
+    return ActionResponse(result=text, source="llm", rag=rag_state, rag_chunks_used=len(hits))
 
 
 async def tasks(email: EmailRequest) -> ActionResponse:

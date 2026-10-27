@@ -23,3 +23,7 @@ input, select { padding: 7px; border-radius: 6px; border: 1px solid var(--muted)
 .stat b { font-size: 16px; text-transform: capitalize; }
 .stat span, .hint { color: var(--muted); font-size: 12px; }
 .online { color: #16a34a; } .offline { color: #dc2626; }
+.resume { margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--card); }
+.resume h4 { margin: 0 0 6px; font-size: 13px; }
+.resume p { margin: 6px 0; }
+details summary { cursor: pointer; margin-top: 6px; }

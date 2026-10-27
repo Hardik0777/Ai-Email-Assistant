@@ -63,7 +63,11 @@ export default function ActionsTab() {
             )}
           </pre>
           <div className="meta">
-            <span>{result.source === "backend" ? "✓ Backend" : "⚠ Backend fallback (local)"}</span>
+            <span>
+              {result.source === "backend" ? "✓ Backend" : "⚠ Backend fallback (local)"}
+              {result.rag === "used" && ` · RAG used ${result.ragChunks} chunk${result.ragChunks === 1 ? "" : "s"}`}
+              {result.rag === "no_match" && " · RAG no resume match"}
+            </span>
             <button onClick={() => navigator.clipboard.writeText(result.text)}>Copy</button>
           </div>
         </div>

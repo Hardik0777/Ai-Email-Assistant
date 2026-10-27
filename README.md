@@ -11,7 +11,7 @@ A Gmail Chrome Extension (Manifest V3) with a FastAPI backend for email summariz
 | 0–1: Extension with 3-tab popup | ✅ Done |
 | 2: FastAPI backend + Gemini AI | ✅ Done |
 | 3: LangChain LCEL chains | ✅ Done |
-| 4: Resume RAG | ⏳ |
+| 4: Resume RAG (Gemini embeddings + ChromaDB) | ✅ Done |
 | 5: Redis, metrics, Docker, tests | ⏳ |
 | 6: ONNX in-browser classifier | ⏳ |
 
@@ -52,3 +52,15 @@ Put `GEMINI_API_KEY=...` in a `.env` file (copy `.env.example`) to get real AI a
 
 - API docs: http://127.0.0.1:8001/docs
 - Tests: `python -m pytest tests`
+
+## Resume RAG
+
+Upload a PDF or DOCX resume from the popup's **Dashboard** tab. The backend:
+
+1. Extracts the text and splits it into sections (Projects, Skills, Education…)
+2. Chunks each section (700 characters, 120 overlap) without crossing section boundaries
+3. Embeds the chunks with Gemini (`gemini-embedding-001`) and stores them in ChromaDB
+4. On **Smart Reply**, retrieves the top 4 chunks for the email and drops weak matches (similarity < 0.55)
+5. Writes the reply with only the relevant resume details
+
+The popup shows `RAG used N chunks` or `RAG no resume match`. If ChromaDB can't be installed, a JSON vector store is used automatically.

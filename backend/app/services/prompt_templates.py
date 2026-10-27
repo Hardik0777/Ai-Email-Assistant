@@ -21,6 +21,21 @@ From: {sender}
 {body}"""
 )
 
+REPLY_WITH_RESUME = PromptTemplate.from_template(
+    """Write a {tone} reply to this email on behalf of the person whose resume details are below.
+Use the resume details only where they genuinely help answer the email (for example skills,
+projects or experience a recruiter asked about). Never invent facts that aren't in the details.
+Keep it under 150 words. Only output the reply text.
+
+Relevant resume details:
+{resume_context}
+
+Subject: {subject}
+From: {sender}
+
+{body}"""
+)
+
 TASKS = PromptTemplate.from_template(
     """List every task, request or deadline in this email.
 Format each line as: ☐ <task> (due: <date or "no deadline">)

@@ -15,6 +15,8 @@ export interface ActionResult {
   ok: boolean;
   text: string;
   source: "backend" | "local";
+  rag?: "used" | "no_match" | "no_resume";
+  ragChunks?: number;
 }
 
 export interface Usage {

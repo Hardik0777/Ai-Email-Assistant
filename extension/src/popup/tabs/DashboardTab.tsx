@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import type { Action, Usage } from "../../shared/types";
 import { getBackendUrl, getUsage, minutesSaved, resetUsage } from "../../shared/storage";
+import ResumePanel from "./ResumePanel";
 
 export default function DashboardTab() {
   const [usage, setUsage] = useState<Usage | null>(null);
@@ -34,7 +35,7 @@ export default function DashboardTab() {
         <button onClick={refresh}>Refresh</button>
         <button onClick={async () => { await resetUsage(); refresh(); }}>Reset local usage</button>
       </div>
-      <p className="hint">Resume upload for RAG replies arrives in Phase 4.</p>
+      <ResumePanel />
     </div>
   );
 }
