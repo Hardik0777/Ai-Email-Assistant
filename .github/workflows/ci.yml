@@ -29,3 +29,20 @@ jobs:
           node-version: 20
       - run: npm --prefix extension ci || npm --prefix extension install
       - run: npm run build:extension
+
+  ml-parity:
+    # Rebuilds the dataset and checks the browser featurizer + onnxruntime-web match Python exactly.
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: pip install -r ml/requirements.txt
+      - run: npm --prefix extension ci || npm --prefix extension install
+      - run: python ml/data/build_dataset.py
+      - run: python ml/evaluation/export_reference.py
+      - run: node --experimental-strip-types --no-warnings ml/evaluation/check_parity.mjs

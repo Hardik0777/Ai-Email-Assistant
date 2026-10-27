@@ -1,12 +1,40 @@
 {
   "manifest_version": 3,
   "name": "AI Email Automation Assistant",
-  "version": "0.1.0",
+  "version": "0.6.0",
   "description": "Summarize, reply, classify and extract tasks from Gmail emails.",
-  "permissions": ["storage", "activeTab", "scripting"],
-  "host_permissions": ["https://mail.google.com/*", "http://127.0.0.1:8001/*"],
-  "background": { "service_worker": "background.js", "type": "module" },
-  "action": { "default_popup": "popup.html", "default_icon": "icons/icon128.png" },
-  "icons": { "128": "icons/icon128.png" },
-  "content_scripts": [{ "matches": ["https://mail.google.com/*"], "js": ["content.js"], "run_at": "document_idle" }]
+  "permissions": [
+    "storage",
+    "activeTab",
+    "scripting"
+  ],
+  "host_permissions": [
+    "https://mail.google.com/*",
+    "http://127.0.0.1:8001/*"
+  ],
+  "background": {
+    "service_worker": "background.js",
+    "type": "module"
+  },
+  "action": {
+    "default_popup": "popup.html",
+    "default_icon": "icons/icon128.png"
+  },
+  "icons": {
+    "128": "icons/icon128.png"
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "https://mail.google.com/*"
+      ],
+      "js": [
+        "content.js"
+      ],
+      "run_at": "document_idle"
+    }
+  ],
+  "content_security_policy": {
+    "extension_pages": "script-src 'self' 'wasm-unsafe-eval'; object-src 'self'"
+  }
 }

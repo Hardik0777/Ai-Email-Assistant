@@ -14,7 +14,8 @@ export type Message =
 export interface ActionResult {
   ok: boolean;
   text: string;
-  source: "backend" | "local";
+  source: "backend" | "local" | "on-device";
+  confidence?: number;
   rag?: "used" | "no_match" | "no_resume";
   ragChunks?: number;
 }

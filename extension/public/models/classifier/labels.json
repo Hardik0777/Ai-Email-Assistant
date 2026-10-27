@@ -1,0 +1,20 @@
+{
+  "labels": [
+    "Urgent",
+    "Opportunity",
+    "Meeting",
+    "Promotional",
+    "Normal"
+  ],
+  "dim": 4096,
+  "metrics": {
+    "test": {
+      "accuracy": 0.798,
+      "macro_f1": 0.73
+    },
+    "realistic": {
+      "accuracy": 0.8,
+      "macro_f1": 0.771
+    }
+  }
+}

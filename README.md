@@ -13,7 +13,7 @@ A Gmail Chrome Extension (Manifest V3) with a FastAPI backend for email summariz
 | 3: LangChain LCEL chains | ✅ Done |
 | 4: Resume RAG (Gemini embeddings + ChromaDB) | ✅ Done |
 | 5: Redis cache + rate limiting, Prometheus, Docker, CI | ✅ Done |
-| 6: ONNX in-browser classifier | ⏳ |
+| 6: ONNX classifier running in the browser (onnxruntime-web) | ✅ Done |
 
 ## Run the extension
 
@@ -83,3 +83,26 @@ Starts the API (Python 3.12, with ChromaDB), Redis, and Prometheus at http://loc
 ### CI
 
 GitHub Actions runs the backend tests and builds the extension on every push (`.github/workflows/ci.yml`).
+
+## On-device classifier (ONNX)
+
+**Classify** runs a model **inside the browser** first, with no server, no API call, and the email never leaving your machine. Only when the model is less than 60% confident does it ask the backend AI.
+
+- **Features:** hashing trick over words, word pairs and 4-character pieces (4,096 dims), log-scaled and L2-normalised. Identical code in Python (`ml/featurize.py`) and TypeScript (`extension/src/shared/featurize.ts`).
+- **Model:** multinomial logistic regression (scikit-learn), exported with `skl2onnx` (~100 KB), run with `onnxruntime-web` (WebAssembly).
+- **Data:** the public SMS Spam Collection (real spam and normal messages) plus generated emails for Urgent, Opportunity and Meeting, assembled from phrase banks. The test set uses phrases held out from training.
+
+| Evaluation | Accuracy | Macro F1 |
+|---|---|---|
+| Held-out test set (610 emails, unseen phrasing) | 79.8% | 0.73 |
+| Hand-written realistic emails (20) | 80% | 0.77 |
+
+Known weakness: Urgent recall is low on unfamiliar wording, which is why low-confidence predictions are passed to the backend AI.
+
+**Parity check:** `ml/evaluation/check_parity.mjs` runs all 630 evaluation emails through the TypeScript featurizer and `onnxruntime-web` and checks they match Python exactly (CI runs this on every push).
+
+```bash
+pip install -r ml/requirements.txt
+python ml/data/build_dataset.py        # downloads SMS data, builds train/test CSVs
+python ml/training/train_classifier.py # trains, evaluates, exports extension/public/models/classifier/model.onnx
+```

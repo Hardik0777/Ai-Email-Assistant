@@ -1,0 +1,21 @@
+subject,body,label
+Server outage - all hands,"Prod is returning 500s for every request since 9:40. Need everyone on the incident bridge now, customers are blocked.",Urgent
+Re: invoice overdue,"Hi, this invoice was due last week and finance is chasing us. Can you process the payment today please?",Urgent
+Submit your assignment,"The portal closes tonight at 11:59 PM. Late submissions will not be accepted under any circumstances.",Urgent
+Security alert: unusual sign-in,"We noticed a sign-in from a new device. If this wasn't you, reset your password immediately.",Urgent
+Hiring: Backend role,"Hey Hardik, I lead the platform team at a Series B startup. Your FastAPI and Redis work is exactly what we need. Open to chat?",Opportunity
+Your profile matches our opening,"We're building an AI team in Bangalore and think you'd be a strong fit for an ML engineer position.",Opportunity
+Summer internship - selected!,"Great news: you've been selected for our summer internship programme. HR will share joining formalities.",Opportunity
+Coding round scheduled,"Thanks for applying. Your online coding assessment is scheduled; it's the first step of our hiring process.",Opportunity
+Sync tomorrow?,"Can we hop on a 20 min call tomorrow afternoon to go through the API design? Sending an invite.",Meeting
+Project review - Thursday 3pm,"Booked the conference room for the project review on Thursday at 3pm. Please bring your slides.",Meeting
+1:1 moved,"Our 1:1 is shifted to Friday morning because of the offsite. Same Meet link.",Meeting
+Mentorship session,"Let's set up a weekly mentorship slot. Does Wednesday evening work for you?",Meeting
+Diwali mega sale is LIVE,"Biggest discounts of the year on electronics and fashion. Free shipping on orders above 499. Shop now!",Promotional
+Your weekly digest,"Top stories picked for you this week, plus a special offer for subscribers. Unsubscribe from these emails here.",Promotional
+Get 3 months free,"Upgrade to Pro today and get your first three months free. Offer valid for new customers only.",Promotional
+Win an iPhone!,"You've been selected for a lucky draw. Click the link to claim your prize before it expires!",Promotional
+Lunch?,"Want to grab lunch at the canteen around 1? I'm starving.",Normal
+Great job on the demo,"The demo went really well today, the client loved the dashboard. Nice work!",Normal
+Book recommendation,"Finished the book you suggested, really enjoyed it. Got any more like that?",Normal
+Happy birthday!,"Happy birthday! Hope you have an amazing day and a great year ahead.",Normal

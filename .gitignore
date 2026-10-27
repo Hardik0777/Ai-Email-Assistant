@@ -6,3 +6,7 @@ dist/
 *.db
 backend/.rag/
 .DS_Store
+ml/data/raw/
+ml/data/train.csv
+ml/data/test.csv
+ml/evaluation/reference.json

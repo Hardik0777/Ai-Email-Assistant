@@ -1,5 +1,12 @@
 import { useState } from "react";
 import type { Action, ActionResult, EmailData } from "../../shared/types";
+import { classifyOnDevice } from "../../shared/onDeviceClassifier";
+import { recordUsage } from "../../shared/storage";
+
+const ICONS: Record<string, string> = {
+  Urgent: "🔴", Opportunity: "🟣", Meeting: "🔵", Promotional: "⚪", Normal: "🟢",
+};
+const CONFIDENT = 0.6; // below this, ask the backend AI instead
 
 const ACTIONS: { id: Action; label: string }[] = [
   { id: "summarize", label: "📝 Summarize" },
@@ -31,6 +38,20 @@ export default function ActionsTab() {
       setError("Open an email in Gmail first. If one is open, refresh the Gmail tab.");
       setLoading(null);
       return;
+    }
+    if (action === "classify") {
+      // Try the on-device ONNX model first: instant, offline, private.
+      try {
+        const p = await classifyOnDevice(email);
+        if (p.confidence >= CONFIDENT) {
+          await recordUsage("classify");
+          setResult({ ok: true, text: `${ICONS[p.label]} ${p.label}`, source: "on-device", confidence: p.confidence });
+          setLoading(null);
+          return;
+        }
+      } catch (e) {
+        console.warn("On-device classifier unavailable, using backend", e);
+      }
     }
     const res: ActionResult = await chrome.runtime.sendMessage({ type: "RUN_ACTION", action, email, tone });
     setResult(res);
@@ -64,7 +85,9 @@ export default function ActionsTab() {
           </pre>
           <div className="meta">
             <span>
-              {result.source === "backend" ? "✓ Backend" : "⚠ Backend fallback (local)"}
+              {result.source === "on-device" && `🧠 On-device model · ${Math.round((result.confidence ?? 0) * 100)}% sure`}
+              {result.source === "backend" && "✓ Backend"}
+              {result.source === "local" && "⚠ Backend fallback (local)"}
               {result.rag === "used" && ` · RAG used ${result.ragChunks} chunk${result.ragChunks === 1 ? "" : "s"}`}
               {result.rag === "no_match" && " · RAG no resume match"}
             </span>
