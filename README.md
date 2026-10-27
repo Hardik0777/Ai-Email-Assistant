@@ -1,8 +1,8 @@
 # AI Email Automation Assistant
 
-A Gmail Chrome Extension (Manifest V3) with a FastAPI backend for email summarization, smart replies, task extraction and classification.
+![CI](https://github.com/Hardik0777/Ai-Email-Assistant/actions/workflows/ci.yml/badge.svg)
 
-> Inspired by [Partyboyking0/AI-Email-Extention](https://github.com/Partyboyking0/AI-Email-Extention).
+A Gmail Chrome Extension (Manifest V3) with a FastAPI backend for email summarization, smart replies, task extraction and classification.
 
 ## Status
 
