@@ -1,0 +1,7 @@
+{
+  "name": "ai-email-assistant",
+  "private": true,
+  "scripts": {
+    "build:extension": "npm --prefix extension run build"
+  }
+}
