@@ -9,7 +9,7 @@ A Gmail Chrome Extension (Manifest V3) with a FastAPI backend for email summariz
 | Phase | Status |
 |---|---|
 | 0–1: Extension with 3-tab popup | ✅ Done |
-| 2: FastAPI backend | ⏳ Next |
+| 2: FastAPI backend + Gemini AI | ✅ Done |
 | 3: LangChain AI layer | ⏳ |
 | 4: Resume RAG | ⏳ |
 | 5: Redis, metrics, Docker, tests | ⏳ |
@@ -37,3 +37,18 @@ ml/          Training and ONNX export scripts
 infra/       Docker Compose, Prometheus
 docs/        Design notes
 ```
+
+## Run the backend
+
+```bash
+cd backend
+python -m venv .venv
+.venv\Scripts\activate
+pip install -r requirements.txt
+uvicorn app.main:app --port 8001 --reload
+```
+
+Put `GEMINI_API_KEY=...` in a `.env` file (copy `.env.example`) to get real AI answers. Without it, the backend uses rule-based fallbacks.
+
+- API docs: http://127.0.0.1:8001/docs
+- Tests: `python -m pytest tests`

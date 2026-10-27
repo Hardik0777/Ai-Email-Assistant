@@ -31,7 +31,7 @@ async function runAction(action: Action, email: EmailData, tone?: string): Promi
     });
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     const data = await res.json();
-    return { ok: true, text: data.result, source: "backend" };
+    return { ok: true, text: data.result, source: data.source === "llm" ? "backend" : "local" };
   } catch {
     return { ok: true, text: runLocal(action, email, tone), source: "local" };
   }
