@@ -12,7 +12,7 @@ A Gmail Chrome Extension (Manifest V3) with a FastAPI backend for email summariz
 | 2: FastAPI backend + Gemini AI | ✅ Done |
 | 3: LangChain LCEL chains | ✅ Done |
 | 4: Resume RAG (Gemini embeddings + ChromaDB) | ✅ Done |
-| 5: Redis, metrics, Docker, tests | ⏳ |
+| 5: Redis cache + rate limiting, Prometheus, Docker, CI | ✅ Done |
 | 6: ONNX in-browser classifier | ⏳ |
 
 ## Run the extension
@@ -64,3 +64,22 @@ Upload a PDF or DOCX resume from the popup's **Dashboard** tab. The backend:
 5. Writes the reply with only the relevant resume details
 
 The popup shows `RAG used N chunks` or `RAG no resume match`. If ChromaDB can't be installed, a JSON vector store is used automatically.
+
+## Production features
+
+- **Response caching:** identical requests are served from cache (Redis, or in-memory if Redis isn't running). Only real AI answers are cached, never fallbacks. Replies are re-generated after a new resume upload.
+- **Rate limiting:** 30 requests per client per minute on the AI routes; extra requests get `429 Too Many Requests` with a `Retry-After` header.
+- **Prometheus metrics** at `/metrics`: request counts and latency per route, AI results by source (llm / fallback), cache hits and misses, rate-limit rejections.
+- **Health check** at `/health` reports whether AI is enabled and which cache and vector store are active.
+
+### Full stack with Docker
+
+```bash
+docker compose -f infra/docker-compose.yml up --build
+```
+
+Starts the API (Python 3.12, with ChromaDB), Redis, and Prometheus at http://localhost:9090.
+
+### CI
+
+GitHub Actions runs the backend tests and builds the extension on every push (`.github/workflows/ci.yml`).

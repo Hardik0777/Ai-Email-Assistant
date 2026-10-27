@@ -5,6 +5,7 @@ import re
 
 import pytest
 
+from app.services import kv
 from app.services.rag import embeddings, resume
 
 
@@ -24,4 +25,5 @@ def isolated_rag(tmp_path, monkeypatch):
 
     monkeypatch.setattr(embeddings, "embed_texts", fake_embed)
     monkeypatch.setattr(resume, "_rag", resume.ResumeRAG(str(tmp_path / "rag")))
+    monkeypatch.setattr(kv, "kv", kv.MemoryKV())  # fresh cache and rate-limit counters per test
     yield

@@ -1,0 +1,32 @@
+# Full stack: API + Redis + Prometheus.
+# Run from the project root:  docker compose -f infra/docker-compose.yml up --build
+services:
+  api:
+    build: ../backend
+    ports:
+      - "8001:8001"
+    env_file:
+      - ../backend/.env
+    environment:
+      REDIS_URL: redis://redis:6379/0
+    volumes:
+      - rag-data:/app/.rag
+    depends_on:
+      - redis
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+
+  prometheus:
+    image: prom/prometheus:latest
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml:ro
+    depends_on:
+      - api
+
+volumes:
+  rag-data:

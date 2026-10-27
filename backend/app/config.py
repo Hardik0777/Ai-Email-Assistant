@@ -16,6 +16,11 @@ class Settings(BaseSettings):
     gemini_model: str = "gemini-2.0-flash"
     gemini_embedding_model: str = "gemini-embedding-001"
 
+    # Cache and rate limiting (Redis if reachable, otherwise in memory)
+    redis_url: str = "redis://localhost:6379/0"
+    cache_ttl_seconds: int = 3600
+    rate_limit_per_minute: int = 30
+
     # Resume RAG
     rag_enabled: bool = True
     rag_chroma_dir: str = ".rag/chroma"
