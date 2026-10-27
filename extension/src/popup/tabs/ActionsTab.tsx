@@ -57,7 +57,11 @@ export default function ActionsTab() {
       {error && <p className="error">{error}</p>}
       {result && (
         <div className="result">
-          <pre>{result.text}</pre>
+          <pre>
+            {result.text.split(/(\*\*[^*]+\*\*)/g).map((part, i) =>
+              part.startsWith("**") ? <b key={i}>{part.slice(2, -2)}</b> : part
+            )}
+          </pre>
           <div className="meta">
             <span>{result.source === "backend" ? "✓ Backend" : "⚠ Backend fallback (local)"}</span>
             <button onClick={() => navigator.clipboard.writeText(result.text)}>Copy</button>

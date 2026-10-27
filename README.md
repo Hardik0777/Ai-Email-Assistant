@@ -10,7 +10,7 @@ A Gmail Chrome Extension (Manifest V3) with a FastAPI backend for email summariz
 |---|---|
 | 0–1: Extension with 3-tab popup | ✅ Done |
 | 2: FastAPI backend + Gemini AI | ✅ Done |
-| 3: LangChain AI layer | ⏳ |
+| 3: LangChain LCEL chains | ✅ Done |
 | 4: Resume RAG | ⏳ |
 | 5: Redis, metrics, Docker, tests | ⏳ |
 | 6: ONNX in-browser classifier | ⏳ |

@@ -1,26 +1,28 @@
-"""Calls Google Gemini over plain HTTP. Returns None on any failure so callers can fall back."""
-import logging
-
+"""Calls Google Gemini over plain HTTP."""
 import httpx
 
 from app.config import settings
 
-log = logging.getLogger(__name__)
 GEMINI_URL = "https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent"
 
 
-async def generate(prompt: str) -> str | None:
+class LLMUnavailable(Exception):
+    """Raised when there's no API key or the Gemini call fails."""
+
+
+async def call_gemini(prompt: str) -> str:
     if not settings.gemini_api_key:
-        return None
+        raise LLMUnavailable("No GEMINI_API_KEY set")
     try:
         async with httpx.AsyncClient(timeout=20) as client:
             res = await client.post(
                 GEMINI_URL.format(model=settings.gemini_model),
-                params={"key": settings.gemini_api_key},
+                headers={"x-goog-api-key": settings.gemini_api_key},  # header, so the key never appears in logs
                 json={"contents": [{"parts": [{"text": prompt}]}]},
             )
             res.raise_for_status()
             return res.json()["candidates"][0]["content"]["parts"][0]["text"].strip()
-    except Exception as exc:  # network error, bad key, quota, unexpected response
-        log.warning("Gemini call failed, using fallback: %s", exc)
-        return None
+    except httpx.HTTPStatusError as exc:
+        raise LLMUnavailable(f"Gemini returned HTTP {exc.response.status_code}") from exc
+    except (httpx.HTTPError, KeyError, IndexError) as exc:
+        raise LLMUnavailable(f"Gemini call failed: {type(exc).__name__}") from exc
